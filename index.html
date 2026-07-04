@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juego Memotex - Juega Memoria</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -58,17 +59,98 @@
             border: 2px solid #667eea;
         }
 
+        /* -------------------------------------------
+           CONTENEDOR DEL RESULTADO FINAL
+        ------------------------------------------- */
+
         #resultado {
+            margin-top: 25px;
             text-align: center;
-            padding: 20px;
-            background: #f0f4ff;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Caja general del mensaje */
+        .resultado-final {
+            display: inline-block;
+            padding: 25px 35px;
+            border-radius: 14px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+            max-width: 420px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Estado ganador */
+        .resultado-final.gano {
+            background: linear-gradient(135deg, #00b34a, #00d85a);
+            color: #ffffff;
+            border: 3px solid #00963e;
+        }
+
+        /* Estado perdedor */
+        .resultado-final.perdio {
+            background: linear-gradient(135deg, #d62828, #e63946);
+            color: #ffffff;
+            border: 3px solid #b71c1c;
+        }
+
+        /* Título del mensaje */
+        .resultado-final h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Texto secundario */
+        .resultado-final p {
+            font-size: 1.1rem;
+            margin: 6px 0;
+            font-weight: 500;
+        }
+
+        /* Animación suave */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* -------------------------------------------
+           BOTÓN ESTADIO NOCTURNO
+        ------------------------------------------- */
+
+        #acciones-juego {
+            margin-top: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #btn-reiniciar {
+            background: linear-gradient(135deg, #0a0f2c, #1a237e);
+            color: #ffffff;
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border: none;
             border-radius: 10px;
-            min-height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1em;
-            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(0, 140, 255, 0.6), 
+                        0 0 22px rgba(0, 140, 255, 0.4);
+            transition: all 0.25s ease-out;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        #btn-reiniciar:hover {
+            background: linear-gradient(135deg, #1a237e, #3949ab);
+            box-shadow: 0 0 18px rgba(0, 140, 255, 0.9),
+                        0 0 28px rgba(0, 140, 255, 0.7);
+            transform: translateY(-2px);
+        }
+
+        #btn-reiniciar:active {
+            transform: scale(0.97);
         }
 
         .instructions {
@@ -76,7 +158,6 @@
             border-left: 4px solid #ffc107;
             padding: 15px;
             border-radius: 5px;
-            margin-top: 20px;
             color: #333;
         }
 
@@ -103,7 +184,15 @@
             }
 
             #puzzle-iframe {
-                height: 500px !important;
+                height: 600px !important;
+            }
+
+            .resultado-final h2 {
+                font-size: 1.4rem;
+            }
+
+            .resultado-final {
+                padding: 20px 25px;
             }
         }
     </style>
@@ -118,15 +207,20 @@
         <div id="juego-memoria">
             <iframe 
                 id="puzzle-iframe"
-                src="https://puzzel.org/es/memory/play?p=-OwORK-4JuI1kM5ZlKWC"
+                src="https://puzzel.org/es/memory/embed?p=-OwORK-4JuI1kM5ZlKWC"
                 width="100%" 
-                height="650"
-                frameborder="0"
-                allowfullscreen>
+                height="800"
+                frameborder="0">
             </iframe>
         </div>
 
         <div id="resultado"></div>
+
+        <div id="acciones-juego">
+            <button id="btn-reiniciar" onclick="resetearJuego()">
+                🔄 VOLVER A JUGAR
+            </button>
+        </div>
 
         <div class="instructions">
             <h3>📋 Cómo jugar:</h3>
@@ -138,5 +232,92 @@
             </ul>
         </div>
     </div>
+
+    <script>
+        // -------------------------------------------
+        // ESCUCHA DE MENSAJES DEL IFRAME
+        // -------------------------------------------
+
+        let paresAcertados = 0;
+
+        window.addEventListener("message", (event) => {
+            const data = event.data;
+
+            if (!data || typeof data !== "object") return;
+
+            // 1) Señal de finalización
+            if (data.completed === true) {
+                manejarFinalizacion(data.activityKey);
+            }
+
+            // 2) Resultados completos del juego
+            if (data.correctUids) {
+                manejarResultados(data);
+            }
+        });
+
+
+        // -------------------------------------------
+        // PROCESAR RESULTADOS DEL JUEGO
+        // -------------------------------------------
+
+        function manejarResultados(data) {
+            // correctUids es un objeto donde cada UID correcto representa una carta acertada
+            const cantidadCorrectas = Object.keys(data.correctUids).length;
+
+            // Cada par = 2 aciertos
+            paresAcertados = Math.floor(cantidadCorrectas / 2);
+
+            console.log("Pares acertados:", paresAcertados);
+        }
+
+
+        // -------------------------------------------
+        // FINALIZACIÓN DEL JUEGO
+        // -------------------------------------------
+
+        function manejarFinalizacion(activityKey) {
+            const gano = paresAcertados >= 3;
+
+            const mensaje = gano
+                ? "¡Felicitaciones! Encontraste 3 o más pares dentro del tiempo."
+                : "¡Buen intento! No llegaste a encontrar 3 pares dentro del tiempo.";
+
+            mostrarMensajeFinal(mensaje, gano, activityKey);
+        }
+
+
+        // -------------------------------------------
+        // MOSTRAR MENSAJE FINAL EN TU SITIO
+        // -------------------------------------------
+
+        function mostrarMensajeFinal(mensaje, gano, activityKey) {
+            const contenedor = document.getElementById("resultado");
+
+            if (contenedor) {
+                contenedor.innerHTML = `
+                    <div class="resultado-final ${gano ? "gano" : "perdio"}">
+                        <h2>${mensaje}</h2>
+                        <p>Pares acertados: ${paresAcertados}</p>
+                        <p>Actividad: ${activityKey}</p>
+                    </div>
+                `;
+            }
+        }
+
+
+        // -------------------------------------------
+        // RESETEAR EL JUEGO DESDE TU SITIO
+        // -------------------------------------------
+
+        function resetearJuego() {
+            const embed = document.getElementById("puzzle-iframe").contentWindow;
+            embed.postMessage({ trigger: { type: "reset" } }, "*");
+
+            // Limpia el mensaje final
+            const contenedor = document.getElementById("resultado");
+            if (contenedor) contenedor.innerHTML = "";
+        }
+    </script>
 </body>
 </html>

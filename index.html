@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Memotex - Juega Memoria</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        #juego-memoria {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        #puzzle-iframe {
+            border-radius: 10px;
+            border: 2px solid #667eea;
+        }
+
+        #resultado {
+            text-align: center;
+            padding: 20px;
+            background: #f0f4ff;
+            border-radius: 10px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .instructions {
+            background: #fffbea;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .instructions h3 {
+            color: #ff9800;
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            #puzzle-iframe {
+                height: 500px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Juego Memotex</h1>
+            <p>¡Desafía tu memoria y diviértete!</p>
+        </div>
+
+        <div id="juego-memoria">
+            <iframe 
+                id="puzzle-iframe"
+                src="https://puzzel.org/es/memory/play?p=-OwORK-4JuI1kM5ZlKWC"
+                width="100%" 
+                height="650"
+                frameborder="0"
+                allowfullscreen>
+            </iframe>
+        </div>
+
+        <div id="resultado"></div>
+
+        <div class="instructions">
+            <h3>📋 Cómo jugar:</h3>
+            <ul>
+                <li>Haz clic en las tarjetas para revelar las imágenes</li>
+                <li>Encuentra los pares que coincidan</li>
+                <li>Intenta completar el juego con el menor número de intentos</li>
+                <li>¡Diviértete poniendo a prueba tu memoria!</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
